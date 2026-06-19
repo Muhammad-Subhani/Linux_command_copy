@@ -7,6 +7,7 @@
 #define GREEN "\033[1;32m"
 #define RESET "\033[0m"
 void ForDirectory(char *Source, char *Dest, char filepath[]);
+void RemoveExtraSlash(char *filepath);
 void Display(char *path);
 void CopyingFiles(char *Arg1, char filepath[], char *Arg2);
 void MakeDestinationPath(char *Arg1, char *Arg2, char filepath[], char name[]);
@@ -29,6 +30,7 @@ int main(int argc, char *argv[]) {
       char *DirecName = GetName(argv[2], name);
       strcpy(filepath, argv[3]);
       strcat(filepath, "/");
+      RemoveExtraSlash(filepath);
       strcat(filepath, DirecName);
       mkdir(filepath, 0777);
       ForDirectory(argv[2], argv[3], filepath);
@@ -57,12 +59,12 @@ void MakeDestinationPath(char *Arg1, char *Arg2, char filepath[], char name[]) {
   printf("%s\n", filepath);
 }
 void CopyingFiles(char *Arg1, char filepath[], char *Arg2) {
-  printf(" source is %s and path is %s\n", Arg1, filepath);
   FILE *Sfptr = fopen(Arg1, "rb");
   if (Sfptr == NULL) {
     printf("Cant open file to read \n");
     return;
   }
+  printf(" source is %s and path is %s\n", Arg1, filepath);
   FILE *Dfptr = fopen(filepath, "wb");
   if (Dfptr == NULL) {
     printf("Cant open file to write \n");
@@ -124,4 +126,11 @@ void Display(char *path) {
          "---------------------------------------------------------------" RESET
          "\n");
   printf("\n\n");
+}
+void RemoveExtraSlash(char *filepath) {
+  char *i;
+  if ((i = strrchr(filepath, '/')) != NULL) {
+    if (*(i - 1) == '/')
+      *i = '\0';
+  }
 }
